@@ -1,0 +1,343 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Estudio y Test de Temas</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f4;
+        }
+        .container {
+            max-width: 800px;
+            margin: 20px auto;
+            background-color: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+        h2, h3 {
+            color: #333;
+        }
+        button {
+            padding: 10px 15px;
+            margin: 5px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #45a049;
+        }
+        .theme-card {
+            background-color: #f9f9f9;
+            margin: 10px 0;
+            padding: 10px;
+            border-radius: 5px;
+            box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
+        }
+        .question-container {
+            margin-bottom: 15px;
+        }
+        .answers {
+            margin-left: 20px;
+        }
+        .answer {
+            margin-bottom: 10px;
+        }
+        .correcto {
+            background-color: #4CAF50;
+            color: white;
+        }
+        .incorrecto {
+            background-color: #f44336;
+            color: white;
+        }
+        .btn {
+            display: inline-block;
+            padding: 10px 20px;
+            background-color: #007BFF;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        .btn:hover {
+            background-color: #0056b3;
+        }
+        #themeContent {
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h2>Selecciona un Tema para Estudiar o Hacer un Test</h2>
+        <div id="themeList"></div>
+        <button class="btn" onclick="startCombinedTest()">Hacer Test de Todos los Temas</button>
+        <div id="themeContent"></div>
+    </div>
+
+    <script>
+        const temas = [
+            {
+                "id": "itil",
+                "nombre": "ITIL y sus versiones",
+                "informacion": `
+                    <h2>ITIL y sus versiones</h2>
+                    <p>ITIL (Information Technology Infrastructure Library) es un conjunto de prácticas para la gestión de servicios...</p>
+                    <h3>Ciclo de Vida del Servicio:</h3>
+                    <ul>
+                        <li><strong>Estratégia del Servicio:</strong> Define las estrategias de TI alineadas con los objetivos de negocio...</li>
+                        <li><strong>Diseño del Servicio:</strong> Define los servicios de TI con enfoque en la calidad...</li>
+                        <li><strong>Transición del Servicio:</strong> Desarrolla y transforma nuevos servicios...</li>
+                        <li><strong>Operación del Servicio:</strong> Asegura la entrega de servicios de TI en producción...</li>
+                    </ul>
+                `,
+                "preguntas": [
+                    {
+                        "id": "p1",
+                        "question": "¿Cuál de las siguientes no es una fase del ciclo de vida de ITIL?",
+                        "answers": [
+                            { "id": "a", "text": "Estrategia del servicio" },
+                            { "id": "b", "text": "Desarrollo del producto" },
+                            { "id": "c", "text": "Transición del servicio" },
+                            { "id": "d", "text": "Operación del servicio" }
+                        ],
+                        "correct_answer": "b"
+                    },
+                    {
+                        "id": "p2",
+                        "question": "¿Qué estándar ISO está relacionado con la gestión de servicios de TI?",
+                        "answers": [
+                            { "id": "a", "text": "ISO 27001" },
+                            { "id": "b", "text": "ISO 9001" },
+                            { "id": "c", "text": "ISO 20000" },
+                            { "id": "d", "text": "ISO 14001" }
+                        ],
+                        "correct_answer": "c"
+                    },
+                    {
+                        "id": "p3",
+                        "question": "¿Qué fase de ITIL se enfoca en garantizar la calidad de los servicios de TI?",
+                        "answers": [
+                            { "id": "a", "text": "Diseño del servicio" },
+                            { "id": "b", "text": "Operación del servicio" },
+                            { "id": "c", "text": "Estrategia del servicio" },
+                            { "id": "d", "text": "Transición del servicio" }
+                        ],
+                        "correct_answer": "a"
+                    }
+                ]
+            },
+            {
+                "id": "programacion",
+                "nombre": "Programación y Paradigmas",
+                "informacion": `
+                    <h2>Paradigmas de la Programación</h2>
+                    <p>La programación ha evolucionado de ser un conjunto de instrucciones secuenciales simples a ser una disciplina más estructurada...</p>
+                    <h3>Paradigmas de Programación:</h3>
+                    <ul>
+                        <li><strong>Programación Estructurada:</strong> Organización del código en bloques secuenciales...</li>
+                        <li><strong>Programación Orientada a Objetos (OOP):</strong> Organización en objetos...</li>
+                        <li><strong>Programación Orientada a Eventos:</strong> Gestión de eventos del usuario...</li>
+                        <li><strong>Programación Orientada a Aspectos (AOP):</strong> Modularización de preocupaciones transversales...</li>
+                    </ul>
+                    <h3>Tendencias Actuales:</h3>
+                    <ul>
+                        <li><strong>Lenguajes funcionales:</strong> Haskell, Scala, etc...</li>
+                        <li><strong>Desarrollo basado en microservicios:</strong> Escalabilidad y mantenibilidad...</li>
+                    </ul>
+                `,
+                "preguntas": [
+                    {
+                        "id": "p1",
+                        "question": "¿Qué caracteriza a la programación estructurada?",
+                        "answers": [
+                            { "id": "a", "text": "El uso de objetos y clases" },
+                            { "id": "b", "text": "La organización lógica del código en bloques secuenciales" },
+                            { "id": "c", "text": "El enfoque en la modularidad y la reutilización" },
+                            { "id": "d", "text": "La gestión de eventos del usuario" }
+                        ],
+                        "correct_answer": "b"
+                    },
+                    {
+                        "id": "p2",
+                        "question": "¿Qué concepto NO es parte de la programación orientada a objetos?",
+                        "answers": [
+                            { "id": "a", "text": "Herencia" },
+                            { "id": "b", "text": "Polimorfismo" },
+                            { "id": "c", "text": "Encapsulamiento" },
+                            { "id": "d", "text": "Generación automática de código" }
+                        ],
+                        "correct_answer": "d"
+                    },
+                    {
+                        "id": "p3",
+                        "question": "¿Qué paradigma de programación se utiliza principalmente en el desarrollo de interfaces gráficas de usuario (GUI)?",
+                        "answers": [
+                            { "id": "a", "text": "Orientación a objetos" },
+                            { "id": "b", "text": "Orientación a eventos" },
+                            { "id": "c", "text": "Programación estructurada" },
+                            { "id": "d", "text": "Desarrollo orientado a pruebas" }
+                        ],
+                        "correct_answer": "b"
+                    },
+                    {
+                        "id": "p4",
+                        "question": "¿Cuál es el propósito principal del desarrollo orientado a pruebas (TDD)?",
+                        "answers": [
+                            { "id": "a", "text": "Generar código automáticamente" },
+                            { "id": "b", "text": "Escribir pruebas antes del código de producción" },
+                            { "id": "c", "text": "Modularizar el código en componentes reutilizables" },
+                            { "id": "d", "text": "Mejorar la interfaz gráfica" }
+                        ],
+                        "correct_answer": "b"
+                    }
+                ]
+            },
+            {
+                "id": "lenguajes_programacion",
+                "nombre": "Lenguajes de Programación y Entornos de Desarrollo",
+                "informacion": `
+                    <h2>Lenguajes de Programación</h2>
+                    <p>Los lenguajes de programación se clasifican según su nivel de abstracción y su propósito...</p>
+                    <h3>Clasificación de Lenguajes:</h3>
+                    <ul>
+                        <li><strong>Lenguajes de Bajo Nivel:</strong> Requieren gestionar directamente los recursos del sistema...</li>
+                        <li><strong>Lenguajes de Alto Nivel:</strong> Más fáciles de usar, como Python, Java...</li>
+                    </ul>
+                    <h3>Principales Lenguajes:</h3>
+                    <ul>
+                        <li><strong>Java:</strong> Lenguaje orientado a objetos...</li>
+                        <li><strong>Python:</strong> Lenguaje simple, utilizado en ciencia de datos...</li>
+                        <li><strong>C#:</strong> Usado en la plataforma .NET...</li>
+                    </ul>
+                `,
+                "preguntas": [
+                    {
+                        "id": "p1",
+                        "question": "¿Qué caracteriza a los lenguajes de bajo nivel?",
+                        "answers": [
+                            { "id": "a", "text": "Están más cerca del lenguaje natural" },
+                            { "id": "b", "text": "Son independientes de la plataforma" },
+                            { "id": "c", "text": "Requieren que el programador gestione los recursos del sistema" },
+                            { "id": "d", "text": "Están orientados a objetos" }
+                        ],
+                        "correct_answer": "c"
+                    },
+                    {
+                        "id": "p2",
+                        "question": "¿Qué lenguaje de programación es ampliamente utilizado en el desarrollo web del lado del cliente?",
+                        "answers": [
+                            { "id": "a", "text": "JavaScript" },
+                            { "id": "b", "text": "Java" },
+                            { "id": "c", "text": "Python" },
+                            { "id": "d", "text": "C#" }
+                        ],
+                        "correct_answer": "a"
+                    },
+                    {
+                        "id": "p3",
+                        "question": "¿Cuál de los siguientes es un ejemplo de un lenguaje de cuarta generación (4GL)?",
+                        "answers": [
+                            { "id": "a", "text": "C" },
+                            { "id": "b", "text": "SQL" },
+                            { "id": "c", "text": "Java" },
+                            { "id": "d", "text": "Python" }
+                        ],
+                        "correct_answer": "b"
+                    },
+                    {
+                        "id": "p4",
+                        "question": "¿Cuál es el propósito principal de los entornos de desarrollo visual?",
+                        "answers": [
+                            { "id": "a", "text": "Permitir el desarrollo de aplicaciones mediante interfaces gráficas" },
+                            { "id": "b", "text": "Ejecutar el código en diferentes plataformas" },
+                            { "id": "c", "text": "Proporcionar acceso directo al hardware" },
+                            { "id": "d", "text": "Escribir código de bajo nivel" }
+                        ],
+                        "correct_answer": "a"
+                    }
+                ]
+            }
+        ];
+
+        // Renderizar la lista de temas
+        const themeListContainer = document.getElementById('themeList');
+        temas.forEach((tema, index) => {
+            const themeCard = document.createElement('div');
+            themeCard.classList.add('theme-card');
+            themeCard.innerHTML = `
+                <h3>${tema.nombre}</h3>
+                <button onclick="showStudyContent(${index})">Ver Información</button>
+                <button onclick="startTest(${index})">Hacer Test</button>
+            `;
+            themeListContainer.appendChild(themeCard);
+        });
+
+        // Mostrar contenido de estudio
+        function showStudyContent(index) {
+            const tema = temas[index];
+            const contentContainer = document.getElementById('themeContent');
+            contentContainer.innerHTML = tema.informacion;
+        }
+
+        // Iniciar test combinado
+        function startCombinedTest() {
+            let combinedQuestions = [];
+            temas.forEach(tema => {
+                combinedQuestions = combinedQuestions.concat(tema.preguntas);
+            });
+
+            // Mezclar las preguntas
+            combinedQuestions = combinedQuestions.sort(() => Math.random() - 0.5);
+
+            // Generar HTML para el test combinado
+            let testHtml = '<h2>Test de Todos los Temas</h2>';
+            combinedQuestions.forEach((pregunta, i) => {
+                testHtml += `
+                    <div class="question-container">
+                        <p>${pregunta.question}</p>
+                        <div class="answers">
+                            ${pregunta.answers.map(answer => `
+                                <div class="answer">
+                                    <input type="radio" name="q${i}" value="${answer.id}" id="q${i}${answer.id}">
+                                    <label for="q${i}${answer.id}">${answer.text}</label>
+                                </div>
+                            `).join('')}
+                        </div>
+                    </div>
+                `;
+            });
+            testHtml += '<button class="btn" onclick="checkCombinedAnswers()">Ver Resultados</button>';
+            document.getElementById('themeContent').innerHTML = testHtml;
+        }
+
+        // Verificar respuestas del test combinado
+        function checkCombinedAnswers() {
+            const allQuestions = temas.flatMap(tema => tema.preguntas);
+            let correctAnswers = 0;
+
+            allQuestions.forEach((pregunta, i) => {
+                const selectedAnswer = document.querySelector(`input[name="q${i}"]:checked`);
+                if (selectedAnswer && selectedAnswer.value === pregunta.correct_answer) {
+                    correctAnswers++;
+                    document.querySelector(`label[for="q${i}${selectedAnswer.value}"]`).parentNode.classList.add('correcto');
+                } else if (selectedAnswer) {
+                    document.querySelector(`label[for="q${i}${selectedAnswer.value}"]`).parentNode.classList.add('incorrecto');
+                }
+            });
+
+            const score = (correctAnswers / allQuestions.length) * 100;
+            alert(`Has acertado ${correctAnswers} de ${allQuestions.length} preguntas. Tu puntuación es: ${score.toFixed(2)}%`);
+        }
+    </script>
+</body>
+</html>
