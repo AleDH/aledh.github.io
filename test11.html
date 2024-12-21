@@ -1,0 +1,343 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Estudio y Test de Temas</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f4;
+        }
+        .container {
+            max-width: 800px;
+            margin: 20px auto;
+            background-color: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+        h2, h3 {
+            color: #333;
+        }
+        button {
+            padding: 10px 15px;
+            margin: 5px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #45a049;
+        }
+        .theme-card {
+            background-color: #f9f9f9;
+            margin: 10px 0;
+            padding: 10px;
+            border-radius: 5px;
+            box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
+        }
+        .question-container {
+            margin-bottom: 15px;
+        }
+        .answers {
+            margin-left: 20px;
+        }
+        .answer {
+            margin-bottom: 10px;
+        }
+        .correcto {
+            background-color: #4CAF50;
+            color: white;
+        }
+        .incorrecto {
+            background-color: #f44336;
+            color: white;
+        }
+        .btn {
+            display: inline-block;
+            padding: 10px 20px;
+            background-color: #007BFF;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        .btn:hover {
+            background-color: #0056b3;
+        }
+        #themeContent {
+            margin-top: 20px;
+        }
+        #chartContainer {
+            margin-top: 30px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h2>Selecciona un Tema para Estudiar o Hacer un Test</h2>
+        <div id="themeList"></div>
+        <button class="btn" onclick="startCombinedTest()">Hacer Test de Todos los Temas</button>
+        <div id="themeContent"></div>
+        <div id="chartContainer">
+            <canvas id="scoreChart"></canvas>
+        </div>
+    </div>
+
+    <script>
+        const temas = [
+            {
+                "id": "itil",
+                "nombre": "ITIL y sus versiones",
+                "informacion": `
+                    <h2>ITIL y sus versiones</h2>
+                    <p>ITIL (Information Technology Infrastructure Library) es un conjunto de prácticas para la gestión de servicios...</p>
+                    <h3>Ciclo de Vida del Servicio:</h3>
+                    <ul>
+                        <li><strong>Estratégia del Servicio:</strong> Define las estrategias de TI alineadas con los objetivos de negocio...</li>
+                        <li><strong>Diseño del Servicio:</strong> Define los servicios de TI con enfoque en la calidad...</li>
+                        <li><strong>Transición del Servicio:</strong> Desarrolla y transforma nuevos servicios...</li>
+                        <li><strong>Operación del Servicio:</strong> Asegura la entrega de servicios de TI en producción...</li>
+                    </ul>
+                `,
+                "preguntas": [
+                    {
+                        "id": "p1",
+                        "question": "¿Cuál de las siguientes no es una fase del ciclo de vida de ITIL?",
+                        "answers": [
+                            { "id": "a", "text": "Estrategia del servicio" },
+                            { "id": "b", "text": "Desarrollo del producto" },
+                            { "id": "c", "text": "Transición del servicio" },
+                            { "id": "d", "text": "Operación del servicio" }
+                        ],
+                        "correct_answer": "b"
+                    },
+                    {
+                        "id": "p2",
+                        "question": "¿Qué estándar ISO está relacionado con la gestión de servicios de TI?",
+                        "answers": [
+                            { "id": "a", "text": "ISO 27001" },
+                            { "id": "b", "text": "ISO 9001" },
+                            { "id": "c", "text": "ISO 20000" },
+                            { "id": "d", "text": "ISO 14001" }
+                        ],
+                        "correct_answer": "c"
+                    },
+                    {
+                        "id": "p3",
+                        "question": "¿Qué fase de ITIL se enfoca en garantizar la calidad de los servicios de TI?",
+                        "answers": [
+                            { "id": "a", "text": "Diseño del servicio" },
+                            { "id": "b", "text": "Operación del servicio" },
+                            { "id": "c", "text": "Estrategia del servicio" },
+                            { "id": "d", "text": "Transición del servicio" }
+                        ],
+                        "correct_answer": "a"
+                    }
+                ]
+            },
+            {
+                "id": "programacion",
+                "nombre": "Programación y Paradigmas",
+                "informacion": `
+                    <h2>Paradigmas de la Programación</h2>
+                    <p>La programación ha evolucionado de ser un conjunto de instrucciones secuenciales simples a ser una disciplina más estructurada...</p>
+                    <h3>Paradigmas de Programación:</h3>
+                    <ul>
+                        <li><strong>Programación Estructurada:</strong> Organización del código en bloques secuenciales...</li>
+                        <li><strong>Programación Orientada a Objetos (OOP):</strong> Organización en objetos...</li>
+                        <li><strong>Programación Orientada a Eventos:</strong> Gestión de eventos del usuario...</li>
+                        <li><strong>Programación Orientada a Aspectos (AOP):</strong> Modularización de preocupaciones transversales...</li>
+                    </ul>
+                    <h3>Tendencias Actuales:</h3>
+                    <ul>
+                        <li><strong>Lenguajes funcionales:</strong> Haskell, Scala, etc...</li>
+                        <li><strong>Desarrollo basado en microservicios:</strong> Escalabilidad y mantenibilidad...</li>
+                    </ul>
+                `,
+                "preguntas": [
+                    {
+                        "id": "p1",
+                        "question": "¿Qué caracteriza a la programación estructurada?",
+                        "answers": [
+                            { "id": "a", "text": "El uso de objetos y clases" },
+                            { "id": "b", "text": "La organización lógica del código en bloques secuenciales" },
+                            { "id": "c", "text": "El enfoque en la modularidad y la reutilización" },
+                            { "id": "d", "text": "La gestión de eventos del usuario" }
+                        ],
+                        "correct_answer": "b"
+                    },
+                    {
+                        "id": "p2",
+                        "question": "¿Qué concepto NO es parte de la programación orientada a objetos?",
+                        "answers": [
+                            { "id": "a", "text": "Herencia" },
+                            { "id": "b", "text": "Polimorfismo" },
+                            { "id": "c", "text": "Encapsulamiento" },
+                            { "id": "d", "text": "Generación automática de código" }
+                        ],
+                        "correct_answer": "d"
+                    },
+                    {
+                        "id": "p3",
+                        "question": "¿Qué paradigma de programación se utiliza principalmente en el desarrollo de interfaces gráficas de usuario (GUI)?",
+                        "answers": [
+                            { "id": "a", "text": "Orientación a objetos" },
+                            { "id": "b", "text": "Orientación a eventos" },
+                            { "id": "c", "text": "Programación estructurada" },
+                            { "id": "d", "text": "Desarrollo orientado a pruebas" }
+                        ],
+                        "correct_answer": "b"
+                    },
+                    {
+                        "id": "p4",
+                        "question": "¿Cuál es el propósito principal del desarrollo orientado a pruebas (TDD)?",
+                        "answers": [
+                            { "id": "a", "text": "Generar código automáticamente" },
+                            { "id": "b", "text": "Escribir pruebas antes del código de producción" },
+                            { "id": "c", "text": "Modularizar el código en componentes reutilizables" },
+                            { "id": "d", "text": "Crear interfaces gráficas de usuario" }
+                        ],
+                        "correct_answer": "b"
+                    }
+                ]
+            }
+        ];
+
+        // Renderizar la lista de temas
+        const themeListContainer = document.getElementById('themeList');
+        temas.forEach((tema, index) => {
+            const themeCard = document.createElement('div');
+            themeCard.classList.add('theme-card');
+            themeCard.innerHTML = `
+                <h3>${tema.nombre}</h3>
+                <button onclick="showStudyContent(${index})">Ver Información</button>
+                <button onclick="startTest(${index})">Hacer Test</button>
+            `;
+            themeListContainer.appendChild(themeCard);
+        });
+
+        // Mostrar contenido de estudio
+        function showStudyContent(index) {
+            const tema = temas[index];
+            const contentContainer = document.getElementById('themeContent');
+            contentContainer.innerHTML = tema.informacion;
+        }
+
+        // Iniciar test
+        function startTest(index) {
+            const tema = temas[index];
+            let testHtml = `<h2>Test de ${tema.nombre}</h2>`;
+            tema.preguntas.forEach((pregunta, i) => {
+                testHtml += `
+                    <div class="question-container">
+                        <p>${pregunta.question}</p>
+                        <div class="answers">
+                            ${pregunta.answers.map(answer => `
+                                <div class="answer">
+                                    <input type="radio" name="q${index}-${i}" value="${answer.id}" id="q${index}-${i}${answer.id}">
+                                    <label for="q${index}-${i}${answer.id}">${answer.text}</label>
+                                </div>
+                            `).join('')}
+                        </div>
+                    </div>
+                `;
+            });
+            testHtml += '<button class="btn" onclick="checkTest(${index})">Ver Resultados</button>';
+            document.getElementById('themeContent').innerHTML = testHtml;
+        }
+
+        // Iniciar test de todos los temas
+        function startCombinedTest() {
+            let testHtml = `<h2>Test de Todos los Temas</h2>`;
+            temas.forEach((tema, index) => {
+                tema.preguntas.forEach((pregunta, i) => {
+                    testHtml += `
+                        <div class="question-container">
+                            <p>${pregunta.question}</p>
+                            <div class="answers">
+                                ${pregunta.answers.map(answer => `
+                                    <div class="answer">
+                                        <input type="radio" name="q${index}-${i}" value="${answer.id}" id="q${index}-${i}${answer.id}">
+                                        <label for="q${index}-${i}${answer.id}">${answer.text}</label>
+                                    </div>
+                                `).join('')}
+                            </div>
+                        </div>
+                    `;
+                });
+            });
+            testHtml += '<button class="btn" onclick="checkCombinedTest()">Ver Resultados</button>';
+            document.getElementById('themeContent').innerHTML = testHtml;
+        }
+
+        // Verificar respuestas del test de todos los temas
+        function checkCombinedTest() {
+            let correctAnswers = 0;
+            temas.forEach((tema, index) => {
+                tema.preguntas.forEach((pregunta, i) => {
+                    const selectedAnswer = document.querySelector(`input[name="q${index}-${i}"]:checked`);
+                    if (selectedAnswer && selectedAnswer.value === pregunta.correct_answer) {
+                        correctAnswers++;
+                        document.querySelector(`label[for="q${index}-${i}${selectedAnswer.value}"]`).parentNode.classList.add('correcto');
+                    } else if (selectedAnswer) {
+                        document.querySelector(`label[for="q${index}-${i}${selectedAnswer.value}"]`).parentNode.classList.add('incorrecto');
+                    }
+                });
+            });
+
+            // Almacenar el resultado en localStorage
+            storeScore(correctAnswers);
+
+            // Mostrar los resultados
+            alert(`Has acertado ${correctAnswers} preguntas.`);
+            updateChart();
+        }
+
+        // Almacenar el número de aciertos en el localStorage
+        function storeScore(score) {
+            let scores = JSON.parse(localStorage.getItem('scores')) || [];
+            scores.push(score);
+            localStorage.setItem('scores', JSON.stringify(scores));
+        }
+
+        // Mostrar el gráfico con el historial de aciertos
+        function updateChart() {
+            let scores = JSON.parse(localStorage.getItem('scores')) || [];
+            let ctx = document.getElementById('scoreChart').getContext('2d');
+            let chart = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: Array.from({ length: scores.length }, (_, i) => `Test ${i + 1}`),
+                    datasets: [{
+                        label: 'Historial de Aciertos',
+                        data: scores,
+                        borderColor: 'rgba(75, 192, 192, 1)',
+                        backgroundColor: 'rgba(75, 192, 192, 0.2)',
+                        fill: true,
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    scales: {
+                        y: {
+                            beginAtZero: true
+                        }
+                    }
+                }
+            });
+        }
+
+        // Inicializar la gráfica al cargar la página
+        window.onload = function() {
+            updateChart();
+        };
+    </script>
+</body>
+</html>
