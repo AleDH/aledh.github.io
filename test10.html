@@ -247,21 +247,45 @@
             document.getElementById('themeContent').innerHTML = testHtml;
         }
 
-        // Verificar respuestas
-        function checkTest(index) {
-            const tema = temas[index];
-            let correctAnswers = 0;
-            tema.preguntas.forEach((pregunta, i) => {
-                const selectedAnswer = document.querySelector(`input[name="q${index}-${i}"]:checked`);
-                if (selectedAnswer && selectedAnswer.value === pregunta.correct_answer) {
-                    correctAnswers++;
-                    document.querySelector(`label[for="q${index}-${i}${selectedAnswer.value}"]`).parentNode.classList.add('correcto');
-                } else if (selectedAnswer) {
-                    document.querySelector(`label[for="q${index}-${i}${selectedAnswer.value}"]`).parentNode.classList.add('incorrecto');
-                }
+        // Iniciar test de todos los temas
+        function startCombinedTest() {
+            let testHtml = `<h2>Test de Todos los Temas</h2>`;
+            temas.forEach((tema, index) => {
+                tema.preguntas.forEach((pregunta, i) => {
+                    testHtml += `
+                        <div class="question-container">
+                            <p>${pregunta.question}</p>
+                            <div class="answers">
+                                ${pregunta.answers.map(answer => `
+                                    <div class="answer">
+                                        <input type="radio" name="q${index}-${i}" value="${answer.id}" id="q${index}-${i}${answer.id}">
+                                        <label for="q${index}-${i}${answer.id}">${answer.text}</label>
+                                    </div>
+                                `).join('')}
+                            </div>
+                        </div>
+                    `;
+                });
             });
-            const score = (correctAnswers / tema.preguntas.length) * 100;
-            alert(`Has acertado ${correctAnswers} de ${tema.preguntas.length} preguntas. Tu puntuación es: ${score.toFixed(2)}%`);
+            testHtml += '<button class="btn" onclick="checkCombinedTest()">Ver Resultados</button>';
+            document.getElementById('themeContent').innerHTML = testHtml;
+        }
+
+        // Verificar respuestas del test de todos los temas
+        function checkCombinedTest() {
+            let correctAnswers = 0;
+            temas.forEach((tema, index) => {
+                tema.preguntas.forEach((pregunta, i) => {
+                    const selectedAnswer = document.querySelector(`input[name="q${index}-${i}"]:checked`);
+                    if (selectedAnswer && selectedAnswer.value === pregunta.correct_answer) {
+                        correctAnswers++;
+                        document.querySelector(`label[for="q${index}-${i}${selectedAnswer.value}"]`).parentNode.classList.add('correcto');
+                    } else if (selectedAnswer) {
+                        document.querySelector(`label[for="q${index}-${i}${selectedAnswer.value}"]`).parentNode.classList.add('incorrecto');
+                    }
+                });
+            });
+            alert(`Has acertado ${correctAnswers} preguntas.`);
         }
     </script>
 </body>
