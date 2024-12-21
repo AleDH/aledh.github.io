@@ -196,74 +196,9 @@
                             { "id": "a", "text": "Generar código automáticamente" },
                             { "id": "b", "text": "Escribir pruebas antes del código de producción" },
                             { "id": "c", "text": "Modularizar el código en componentes reutilizables" },
-                            { "id": "d", "text": "Mejorar la interfaz gráfica" }
+                            { "id": "d", "text": "Crear interfaces gráficas de usuario" }
                         ],
                         "correct_answer": "b"
-                    }
-                ]
-            },
-            {
-                "id": "lenguajes_programacion",
-                "nombre": "Lenguajes de Programación y Entornos de Desarrollo",
-                "informacion": `
-                    <h2>Lenguajes de Programación</h2>
-                    <p>Los lenguajes de programación se clasifican según su nivel de abstracción y su propósito...</p>
-                    <h3>Clasificación de Lenguajes:</h3>
-                    <ul>
-                        <li><strong>Lenguajes de Bajo Nivel:</strong> Requieren gestionar directamente los recursos del sistema...</li>
-                        <li><strong>Lenguajes de Alto Nivel:</strong> Más fáciles de usar, como Python, Java...</li>
-                    </ul>
-                    <h3>Principales Lenguajes:</h3>
-                    <ul>
-                        <li><strong>Java:</strong> Lenguaje orientado a objetos...</li>
-                        <li><strong>Python:</strong> Lenguaje simple, utilizado en ciencia de datos...</li>
-                        <li><strong>C#:</strong> Usado en la plataforma .NET...</li>
-                    </ul>
-                `,
-                "preguntas": [
-                    {
-                        "id": "p1",
-                        "question": "¿Qué caracteriza a los lenguajes de bajo nivel?",
-                        "answers": [
-                            { "id": "a", "text": "Están más cerca del lenguaje natural" },
-                            { "id": "b", "text": "Son independientes de la plataforma" },
-                            { "id": "c", "text": "Requieren que el programador gestione los recursos del sistema" },
-                            { "id": "d", "text": "Están orientados a objetos" }
-                        ],
-                        "correct_answer": "c"
-                    },
-                    {
-                        "id": "p2",
-                        "question": "¿Qué lenguaje de programación es ampliamente utilizado en el desarrollo web del lado del cliente?",
-                        "answers": [
-                            { "id": "a", "text": "JavaScript" },
-                            { "id": "b", "text": "Java" },
-                            { "id": "c", "text": "Python" },
-                            { "id": "d", "text": "C#" }
-                        ],
-                        "correct_answer": "a"
-                    },
-                    {
-                        "id": "p3",
-                        "question": "¿Cuál de los siguientes es un ejemplo de un lenguaje de cuarta generación (4GL)?",
-                        "answers": [
-                            { "id": "a", "text": "C" },
-                            { "id": "b", "text": "SQL" },
-                            { "id": "c", "text": "Java" },
-                            { "id": "d", "text": "Python" }
-                        ],
-                        "correct_answer": "b"
-                    },
-                    {
-                        "id": "p4",
-                        "question": "¿Cuál es el propósito principal de los entornos de desarrollo visual?",
-                        "answers": [
-                            { "id": "a", "text": "Permitir el desarrollo de aplicaciones mediante interfaces gráficas" },
-                            { "id": "b", "text": "Ejecutar el código en diferentes plataformas" },
-                            { "id": "c", "text": "Proporcionar acceso directo al hardware" },
-                            { "id": "d", "text": "Escribir código de bajo nivel" }
-                        ],
-                        "correct_answer": "a"
                     }
                 ]
             }
@@ -289,54 +224,44 @@
             contentContainer.innerHTML = tema.informacion;
         }
 
-        // Iniciar test combinado
-        function startCombinedTest() {
-            let combinedQuestions = [];
-            temas.forEach(tema => {
-                combinedQuestions = combinedQuestions.concat(tema.preguntas);
-            });
-
-            // Mezclar las preguntas
-            combinedQuestions = combinedQuestions.sort(() => Math.random() - 0.5);
-
-            // Generar HTML para el test combinado
-            let testHtml = '<h2>Test de Todos los Temas</h2>';
-            combinedQuestions.forEach((pregunta, i) => {
+        // Iniciar test
+        function startTest(index) {
+            const tema = temas[index];
+            let testHtml = `<h2>Test de ${tema.nombre}</h2>`;
+            tema.preguntas.forEach((pregunta, i) => {
                 testHtml += `
                     <div class="question-container">
                         <p>${pregunta.question}</p>
                         <div class="answers">
                             ${pregunta.answers.map(answer => `
                                 <div class="answer">
-                                    <input type="radio" name="q${i}" value="${answer.id}" id="q${i}${answer.id}">
-                                    <label for="q${i}${answer.id}">${answer.text}</label>
+                                    <input type="radio" name="q${index}-${i}" value="${answer.id}" id="q${index}-${i}${answer.id}">
+                                    <label for="q${index}-${i}${answer.id}">${answer.text}</label>
                                 </div>
                             `).join('')}
                         </div>
                     </div>
                 `;
             });
-            testHtml += '<button class="btn" onclick="checkCombinedAnswers()">Ver Resultados</button>';
+            testHtml += '<button class="btn" onclick="checkTest(${index})">Ver Resultados</button>';
             document.getElementById('themeContent').innerHTML = testHtml;
         }
 
-        // Verificar respuestas del test combinado
-        function checkCombinedAnswers() {
-            const allQuestions = temas.flatMap(tema => tema.preguntas);
+        // Verificar respuestas
+        function checkTest(index) {
+            const tema = temas[index];
             let correctAnswers = 0;
-
-            allQuestions.forEach((pregunta, i) => {
-                const selectedAnswer = document.querySelector(`input[name="q${i}"]:checked`);
+            tema.preguntas.forEach((pregunta, i) => {
+                const selectedAnswer = document.querySelector(`input[name="q${index}-${i}"]:checked`);
                 if (selectedAnswer && selectedAnswer.value === pregunta.correct_answer) {
                     correctAnswers++;
-                    document.querySelector(`label[for="q${i}${selectedAnswer.value}"]`).parentNode.classList.add('correcto');
+                    document.querySelector(`label[for="q${index}-${i}${selectedAnswer.value}"]`).parentNode.classList.add('correcto');
                 } else if (selectedAnswer) {
-                    document.querySelector(`label[for="q${i}${selectedAnswer.value}"]`).parentNode.classList.add('incorrecto');
+                    document.querySelector(`label[for="q${index}-${i}${selectedAnswer.value}"]`).parentNode.classList.add('incorrecto');
                 }
             });
-
-            const score = (correctAnswers / allQuestions.length) * 100;
-            alert(`Has acertado ${correctAnswers} de ${allQuestions.length} preguntas. Tu puntuación es: ${score.toFixed(2)}%`);
+            const score = (correctAnswers / tema.preguntas.length) * 100;
+            alert(`Has acertado ${correctAnswers} de ${tema.preguntas.length} preguntas. Tu puntuación es: ${score.toFixed(2)}%`);
         }
     </script>
 </body>
